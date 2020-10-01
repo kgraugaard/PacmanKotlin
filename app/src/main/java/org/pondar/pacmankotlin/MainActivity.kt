@@ -3,8 +3,11 @@ package org.pondar.pacmankotlin
 import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -24,11 +27,21 @@ class MainActivity : AppCompatActivity() {
         game?.setGameView(gameView)
         gameView.setGame(game)
         game?.newGame()
-        moveRight.setOnClickListener {
-            game?.movePacmanRight(10)
+/*        moveRight.setOnClickListener {
+            //game?.movePacmanRight(10)
+            game?.movePacman(10)
+        }*/
+
+        //init all buttons
+        for (i in 0 until buttons.childCount){
+            val button = buttons.getChildAt(i)
+            if (button is Button){
+                Log.d("ButtonId", resources.getResourceEntryName(button.id))
+                button.setOnClickListener {
+                    game?.movePacman(10, resources.getResourceEntryName(button.id))
+                }
+            }
         }
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
