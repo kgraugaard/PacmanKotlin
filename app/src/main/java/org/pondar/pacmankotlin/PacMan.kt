@@ -8,13 +8,13 @@ import android.graphics.Rect
 import android.util.Log
 import java.lang.Exception
 
-class PacMan(context: Context) : GameItem(context) {
+class PacMan(context: Context) : GameActor(context) {
 
     init {
         this.bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman)
     }
 
-    fun IsCollided(foreignObject: GameItem) : Boolean {
+    fun IsCollided(foreignObject: GameActor) : Boolean {
 
         val foreignRect = foreignObject.getRect()
 

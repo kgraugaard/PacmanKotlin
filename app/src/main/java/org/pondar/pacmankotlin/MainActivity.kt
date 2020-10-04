@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         running = true
+        //set timer
         timer.schedule(object: TimerTask(){
             override fun run() {
                 timerMethod()
@@ -95,9 +96,6 @@ class MainActivity : AppCompatActivity() {
         if (running)
         {
             counter++
-            Log.d("Counter", counter.toString())
-            Log.d("Direction", game?.direction.toString())
-
             game?.movePacman(10)
         }
     }
