@@ -50,11 +50,23 @@ class GameView : View {
         val paint = Paint()
         canvas.drawColor(Color.WHITE) //clear entire canvas to white color
 
-        //draw the pacman
-        canvas.drawBitmap(game!!.pacBitmap, game?.pacx!!.toFloat(),
-                game?.pacy!!.toFloat(), paint)
+        //draw the cooins first
+        for (item in game!!.coins)
+        {
+            if (!item.taken){
+                canvas.drawBitmap(
+                        item.bitmap!!,
+                        item.x.toFloat(),
+                        item.y.toFloat(),
+                        paint)
 
-        //TODO loop through the list of goldcoins and draw them.
+            }
+        }
+
+        //draw the pacman
+        val pac = game!!.pacman
+        canvas.drawBitmap(pac.bitmap!!, pac.x!!.toFloat(),
+                pac.y!!.toFloat(), paint)
 
         game?.doCollisionCheck()
         super.onDraw(canvas)

@@ -10,6 +10,12 @@
         android:title="@string/newgame"/>
 
     <item
+        android:id="@+id/action_pause"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="@string/pause"/>
+
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never"
