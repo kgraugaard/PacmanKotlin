@@ -1,12 +1,12 @@
 package org.pondar.pacmankotlin
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Rect
 import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
+import java.lang.Exception
 import java.util.*
 
 
@@ -22,8 +22,8 @@ class Game(private var context: Context, view: TextView) {
 
     //bitmap of the pacman
     val pacman = PacMan(context.resources)
-    var pacmanDirection: Direction = Direction.stopped
 
+    var direction = Direction.none
 
     //did we initialize the coins?
     var coinsInitialized = false
@@ -48,7 +48,7 @@ class Game(private var context: Context, view: TextView) {
     //TODO initialize goldcoins also here
     fun initializeGoldcoins() {
         //DO Stuff to initialize the array list with coins.
-        for (i in 0..0) {
+        for (i in 0..3) {
             coins.add(GoldCoin(context.resources, w, h))
         }
 
@@ -62,6 +62,7 @@ class Game(private var context: Context, view: TextView) {
         //reset the points
         coinsInitialized = false
         coins.clear()
+        direction = Direction.none
         points = 0
         pointsView.text = "${context.resources.getString(R.string.points)} $points"
         gameView?.invalidate() //redraw screen
@@ -72,25 +73,40 @@ class Game(private var context: Context, view: TextView) {
         this.w = w
     }
 
-    fun movePacman(pixels: Int, direction: String) {
+    fun changeDirection(strDirection: String){
+        if (strDirection == "moveRight"){
+            direction = Direction.rigth
+        } else if (strDirection == "moveLeft"){
+            direction = Direction.left
+        } else if (strDirection == "moveDown") {
+            direction = Direction.down
+        } else if (strDirection == "moveUp"){
+            direction = Direction.up
+        } else
+        {
+            direction = Direction.none
+        }
+    }
+
+    fun movePacman(pixels: Int) {
 
         when (direction) {
-            "moveRight" -> {
+            Direction.rigth -> {
                 if (pacman.x + pixels + pacman.width() < w) {
                     pacman.x = pacman.x + pixels
                 }
             }
-            "moveLeft" -> {
+            Direction.left -> {
                 if (pacman.x - pixels > 0) {
                     pacman.x = pacman.x - pixels
                 }
             }
-            "moveDown" -> {
+            Direction.down -> {
                 if (pacman.y + pixels + pacman.height() < h) {
                     pacman.y = pacman.y + pixels
                 }
             }
-            "moveUp" -> {
+            Direction.up -> {
                 if (pacman.y - pixels > 0) {
                     pacman.y = pacman.y - pixels
                 }
@@ -108,41 +124,24 @@ class Game(private var context: Context, view: TextView) {
     //so you need to go through the arraylist of goldcoins and
     //check each of them for a collision with the pacman
     fun doCollisionCheck() {
-        val firstCoin = coins[0]
 
+        val remainingCoins = coins.filter { !it.taken }
 
-        /*
-        val pacmanRect: Rect = Rect(pacman.x, pacman.y, pacman.x + pacBitmap.width, pacman.y + pacBitmap.height);
-        val coinRect: Rect = firstCoin.getRect()
+        if (remainingCoins.count() == 0)
+        {
+            //game over
+            Toast.makeText(context, "Game Over", Toast.LENGTH_SHORT).show()
+        }
 
-
-
-        if (pacmanRect.intersect(coinRect)){
-            val collisionBounds = getCollisionBounds(pacmanRect, coinRect)
-
-            for (i in collisionBounds!!.left until collisionBounds!!.right) {
-                for (j in collisionBounds!!.top until collisionBounds!!.bottom) {
-
-                    val bitmap1Pixel: Int = pacBitmap.getPixel(i - pacman.x, j - pacman.y)
-                    val bitmap2Pixel: Int = firstCoin.Icon.getPixel(i - firstCoin.X, j - firstCoin.Y)
-                    if (isFilled(bitmap1Pixel) && isFilled(bitmap2Pixel)) {
-                        Log.d("Collision", true.toString())
-                    }
-                }
+        for (coin in remainingCoins){
+            if (pacman.IsCollided(coin)){
+                coin.taken = true
+                points++
+                pointsView.text = "${context.resources.getString(R.string.points)} $points"
             }
-
-        }*/
-
-        //Log.d("Rect", pacmanRect.flattenToString() + ": Coin: " + firstCoin.getRect().flattenToString() + ". Intersect: " + pacmanRect.intersect(coinRect).toString())
+        }
     }
 
-    private fun getCollisionBounds(rect1: Rect, rect2: Rect): Rect? {
-        return Rect(Math.max(rect1.left, rect2.left), Math.max(rect1.top, rect2.top), Math.min(rect1.right, rect2.right), Math.min(rect1.bottom, rect2.bottom))
-    }
-
-    private fun isFilled(pixel: Int): Boolean {
-        return pixel != Color.TRANSPARENT
-    }
 
 
     @Deprecated("Use movePacman instead")
