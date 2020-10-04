@@ -21,7 +21,7 @@ class Game(private var context: Context, view: TextView) {
     private var points: Int = 0
 
     //bitmap of the pacman
-    val pacman = PacMan(context.resources)
+    val pacman = PacMan(context)
 
     var direction = Direction.none
 
@@ -49,7 +49,7 @@ class Game(private var context: Context, view: TextView) {
     fun initializeGoldcoins() {
         //DO Stuff to initialize the array list with coins.
         for (i in 0..3) {
-            coins.add(GoldCoin(context.resources, w, h))
+            coins.add(GoldCoin(context, w, h))
         }
 
         coinsInitialized = true

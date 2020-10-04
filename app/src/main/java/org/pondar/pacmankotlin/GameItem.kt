@@ -1,10 +1,10 @@
 package org.pondar.pacmankotlin
 
-import android.content.res.Resources
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
 
-open class GameItem(val resources: Resources) {
+open class GameItem(val context: Context) {
 
     var x: Int = 0
     var y: Int = 0

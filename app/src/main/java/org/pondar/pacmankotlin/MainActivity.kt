@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             override fun run() {
                 timerMethod()
             }
-        }, 0 , 40)
+        }, 0 , 30)
 
     }
 
