@@ -55,21 +55,18 @@ class GameView : View {
         {
             if (!item.taken){
                 canvas.drawBitmap(
-                        item.Icon!!,
-                        item.X.toFloat(),
-                        item.Y.toFloat(),
+                        item.bitmap!!,
+                        item.x.toFloat(),
+                        item.y.toFloat(),
                         paint)
 
             }
         }
 
         //draw the pacman
-        canvas.drawBitmap(game!!.pacBitmap, game?.pacx!!.toFloat(),
-                game?.pacy!!.toFloat(), paint)
-
-
-
-        //TODO loop through the list of goldcoins and draw them.
+        val pac = game!!.pacman
+        canvas.drawBitmap(pac.bitmap!!, pac.x!!.toFloat(),
+                pac.y!!.toFloat(), paint)
 
         game?.doCollisionCheck()
         super.onDraw(canvas)

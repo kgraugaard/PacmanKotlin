@@ -10,18 +10,14 @@ import kotlin.random.Random
 
 
 //Here you need to fill out what should be in a GoldCoin and what should the constructor be
-class GoldCoin(val resources: Resources, val maxX: Int, val maxY: Int) {
-
-    var X: Int = Random.nextInt(0, maxX)
-    var Y: Int = Random.nextInt(0, maxY)
-
-    var Icon: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.coin20x20)
+class GoldCoin(resources: Resources, maxX: Int, maxY: Int) : GameItem(resources) {
 
     var taken: Boolean = false
 
-    fun getRect(): Rect
-    {
-        return Rect(X, Y, X + Icon.width, Y + Icon.height)
+    init {
+        x = Random.nextInt(0, maxX)
+        y = Random.nextInt(0, maxY)
+        bitmap = BitmapFactory.decodeResource(resources, R.drawable.coin20x20)
     }
 
 }

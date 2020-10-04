@@ -21,10 +21,7 @@ class Game(private var context: Context, view: TextView) {
     private var points: Int = 0
 
     //bitmap of the pacman
-    var pacBitmap: Bitmap
-    var pacx: Int = 0
-    var pacy: Int = 0
-
+    val pacman = PacMan(context.resources)
     var pacmanDirection: Direction = Direction.stopped
 
 
@@ -41,7 +38,6 @@ class Game(private var context: Context, view: TextView) {
 
 
     init {
-        pacBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman)
         newGame()
     }
 
@@ -55,15 +51,14 @@ class Game(private var context: Context, view: TextView) {
         for (i in 0..0) {
             coins.add(GoldCoin(context.resources, w, h))
         }
-/*        val coin = GoldCoin(context.resources, w, h)
-        coins.add(coin)*/
+
         coinsInitialized = true
     }
 
 
     fun newGame() {
-        pacx = (w - pacBitmap.width) / 2
-        pacy = (h - pacBitmap.height) / 2 //just some starting coordinates - you can change this.
+        pacman.x = (w - pacman.width()) / 2
+        pacman.y = (h - pacman.height()) / 2 //just some starting coordinates - you can change this.
         //reset the points
         coinsInitialized = false
         coins.clear()
@@ -81,23 +76,23 @@ class Game(private var context: Context, view: TextView) {
 
         when (direction) {
             "moveRight" -> {
-                if (pacx + pixels + pacBitmap.width < w) {
-                    pacx = pacx + pixels
+                if (pacman.x + pixels + pacman.width() < w) {
+                    pacman.x = pacman.x + pixels
                 }
             }
             "moveLeft" -> {
-                if (pacx - pixels > 0) {
-                    pacx = pacx - pixels
+                if (pacman.x - pixels > 0) {
+                    pacman.x = pacman.x - pixels
                 }
             }
             "moveDown" -> {
-                if (pacy + pixels + pacBitmap.height < h) {
-                    pacy = pacy + pixels
+                if (pacman.y + pixels + pacman.height() < h) {
+                    pacman.y = pacman.y + pixels
                 }
             }
             "moveUp" -> {
-                if (pacy - pixels > 0) {
-                    pacy = pacy - pixels
+                if (pacman.y - pixels > 0) {
+                    pacman.y = pacman.y - pixels
                 }
             }
         }
@@ -114,7 +109,10 @@ class Game(private var context: Context, view: TextView) {
     //check each of them for a collision with the pacman
     fun doCollisionCheck() {
         val firstCoin = coins[0]
-        val pacmanRect: Rect = Rect(pacx, pacy, pacx + pacBitmap.width, pacy + pacBitmap.height);
+
+
+        /*
+        val pacmanRect: Rect = Rect(pacman.x, pacman.y, pacman.x + pacBitmap.width, pacman.y + pacBitmap.height);
         val coinRect: Rect = firstCoin.getRect()
 
 
@@ -125,7 +123,7 @@ class Game(private var context: Context, view: TextView) {
             for (i in collisionBounds!!.left until collisionBounds!!.right) {
                 for (j in collisionBounds!!.top until collisionBounds!!.bottom) {
 
-                    val bitmap1Pixel: Int = pacBitmap.getPixel(i - pacx, j - pacy)
+                    val bitmap1Pixel: Int = pacBitmap.getPixel(i - pacman.x, j - pacman.y)
                     val bitmap2Pixel: Int = firstCoin.Icon.getPixel(i - firstCoin.X, j - firstCoin.Y)
                     if (isFilled(bitmap1Pixel) && isFilled(bitmap2Pixel)) {
                         Log.d("Collision", true.toString())
@@ -133,7 +131,7 @@ class Game(private var context: Context, view: TextView) {
                 }
             }
 
-        }
+        }*/
 
         //Log.d("Rect", pacmanRect.flattenToString() + ": Coin: " + firstCoin.getRect().flattenToString() + ". Intersect: " + pacmanRect.intersect(coinRect).toString())
     }
@@ -150,8 +148,8 @@ class Game(private var context: Context, view: TextView) {
     @Deprecated("Use movePacman instead")
     fun movePacmanRight(pixels: Int) {
         //still within our boundaries?
-        if (pacx + pixels + pacBitmap.width < w) {
-            pacx = pacx + pixels
+        if (pacman.x + pixels + pacman.width() < w) {
+            pacman.x = pacman.x + pixels
             doCollisionCheck()
             gameView!!.invalidate()
         }
