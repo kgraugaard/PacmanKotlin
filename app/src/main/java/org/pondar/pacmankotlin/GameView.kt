@@ -45,22 +45,35 @@ class GameView : View {
         if (!(game!!.coinsInitialized))
             game?.initializeGoldcoins()
 
+        //are Enemies?
+        if (!(game!!.enemiesInitialized))
+            game?.initializeEnemies()
 
         //Making a new paint object
         val paint = Paint()
         canvas.drawColor(Color.WHITE) //clear entire canvas to white color
 
         //draw the cooins first
-        for (item in game!!.coins)
+        for (coin in game!!.coins)
         {
-            if (!item.taken){
+            if (!coin.taken){
                 canvas.drawBitmap(
-                        item.bitmap!!,
-                        item.x.toFloat(),
-                        item.y.toFloat(),
+                        coin.bitmap!!,
+                        coin.x.toFloat(),
+                        coin.y.toFloat(),
                         paint)
 
             }
+        }
+
+        //draw an enemy
+        for (enemy in game!!.enemies)
+        {
+            canvas.drawBitmap(
+                    enemy.bitmap!!,
+                    enemy.x.toFloat(),
+                    enemy.y.toFloat(),
+                    paint)
         }
 
         //draw the pacman

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="enemy_images">
+        <item>@drawable/enemy1</item>
+        <item>@drawable/enemy2</item>
+        <item>@drawable/enemy3</item>
+        <item>@drawable/enemy4</item>
+    </array>
+</resources>

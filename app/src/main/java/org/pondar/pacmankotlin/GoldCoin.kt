@@ -18,10 +18,8 @@ class GoldCoin(context: Context, maxX: Int, maxY: Int) : GameActor(context) {
 
     var taken: Boolean by Delegates.observable(false) { _, oldValue, newValue ->
         Log.d("taken","New Value $newValue")
-        playSound(R.raw.coincollect)
+        //playSound(R.raw.coincollect)
     }
-
-    /*var taken: Boolean = false*/
 
     init {
         x = Random.nextInt(0, maxX)

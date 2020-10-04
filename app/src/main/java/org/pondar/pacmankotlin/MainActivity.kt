@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     private var timer: Timer = Timer()
     private var counter : Int = 0
     private var running = false
-    private var direction: Direction = Direction.none
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,10 +30,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         game = Game(this,pointsView)
 
-
         game?.setGameView(gameView)
         gameView.setGame(game)
         game?.newGame()
+
+/*        game?.onGameOver = {value, msg ->
+            Log.d("GAMEOVER", msg)
+
+        }*/
 
         //init all buttons
         for (i in 0 until buttons.childCount){

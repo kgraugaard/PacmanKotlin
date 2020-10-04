@@ -8,7 +8,8 @@ import android.widget.TextView
 import android.widget.Toast
 import java.lang.Exception
 import java.util.*
-
+import kotlin.collections.ArrayList
+import kotlin.properties.Delegates
 
 /**
  *
@@ -20,22 +21,37 @@ class Game(private var context: Context, view: TextView) {
     private var pointsView: TextView = view
     private var points: Int = 0
 
-    //bitmap of the pacman
-    val pacman = PacMan(context)
-
-    var direction = Direction.none
-
-    //did we initialize the coins?
-    var coinsInitialized = false
-
-    //the list of goldcoins - initially empty
-    var coins = ArrayList<GoldCoin>()
-
     //a reference to the gameview
     private var gameView: GameView? = null
     private var h: Int = 0
     private var w: Int = 0 //height and width of screen
 
+    //bitmap of the pacman
+    val pacman = PacMan(context)
+    var direction = Direction.none
+
+    //did we initialize the coins?
+    var coinsInitialized = false
+    var enemiesInitialized = false
+
+    //the list of goldcoins - initially empty
+    var coins = ArrayList<GoldCoin>()
+    var enemies = ArrayList<Enemy>()
+
+    //is the game on???
+/*    var GameWon: Boolean by Delegates.observable(false) {_, oldVal, newVal ->
+        if (newVal){
+            onGameOver?.invoke(true, "Player won the game")
+        }
+    }
+
+    var GameOver: Boolean by Delegates.observable(false){_ , oldVal, newVal ->
+        if (newVal){
+            onGameOver?.invoke(true, "Player Lost the game")
+        }
+    }
+
+    var onGameOver: ((value: Boolean, msg: String) -> Unit)? = null*/
 
     init {
         newGame()
@@ -55,13 +71,22 @@ class Game(private var context: Context, view: TextView) {
         coinsInitialized = true
     }
 
+    fun initializeEnemies(){
+        for (i in 0..0){
+            enemies.add(Enemy(context))
+        }
+        enemiesInitialized = true
+    }
+
 
     fun newGame() {
         pacman.x = (w - pacman.width()) / 2
         pacman.y = (h - pacman.height()) / 2 //just some starting coordinates - you can change this.
         //reset the points
         coinsInitialized = false
+        enemiesInitialized = false
         coins.clear()
+        enemies.clear()
         direction = Direction.none
         points = 0
         pointsView.text = "${context.resources.getString(R.string.points)} $points"
@@ -127,18 +152,29 @@ class Game(private var context: Context, view: TextView) {
 
         val remainingCoins = coins.filter { !it.taken }
 
-        if (remainingCoins.count() == 0)
-        {
-            //game over
-            Toast.makeText(context, "Game Over", Toast.LENGTH_SHORT).show()
-        }
-
+        //check for collision on coins
         for (coin in remainingCoins){
             if (pacman.IsCollided(coin)){
                 coin.taken = true
                 points++
                 pointsView.text = "${context.resources.getString(R.string.points)} $points"
             }
+        }
+
+        //check for collision on enemies
+        for (enemy in enemies){
+            if (pacman.IsCollided(enemy)){
+                enemy.taken = true
+                direction = Direction.none
+                Toast.makeText(context, "Game Over. Player Lost", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        //game over
+        if (remainingCoins.count() == 0 && coinsInitialized)
+        {
+            direction = Direction.none
+            Toast.makeText(context, "Game Over. Player Won", Toast.LENGTH_SHORT).show()
         }
     }
 
