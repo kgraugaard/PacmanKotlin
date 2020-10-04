@@ -1,5 +1,5 @@
 package org.pondar.pacmankotlin
 
 enum class Direction {
-    left, right, up, down
+    left, rigth, up, down, stopped
 }
