@@ -38,20 +38,23 @@ class Game(private var context: Context, view: TextView) {
     var coins = ArrayList<GoldCoin>()
     var enemies = ArrayList<Enemy>()
 
+    var numberOfCoins: Int = 3
+    var numberOfEnemies: Int = 0
+
+    var onGameRunning: ((value: Boolean) -> Unit)? = null
+
     //is the game on???
-/*    var GameWon: Boolean by Delegates.observable(false) {_, oldVal, newVal ->
+    var GameWon: Boolean by Delegates.observable(false) {_, oldVal, newVal ->
         if (newVal){
-            onGameOver?.invoke(true, "Player won the game")
+            //onGameOver?.invoke(true, "Player won the game")
         }
     }
 
     var GameOver: Boolean by Delegates.observable(false){_ , oldVal, newVal ->
         if (newVal){
-            onGameOver?.invoke(true, "Player Lost the game")
+            //onGameOver?.invoke(true, "Player Lost the game")
         }
     }
-
-    var onGameOver: ((value: Boolean, msg: String) -> Unit)? = null*/
 
     init {
         newGame()
@@ -64,16 +67,25 @@ class Game(private var context: Context, view: TextView) {
     //TODO initialize goldcoins also here
     fun initializeGoldcoins() {
         //DO Stuff to initialize the array list with coins.
-        for (i in 0..3) {
-            coins.add(GoldCoin(context, w, h))
+        for (i in 0..numberOfCoins) {
+            coins.add(GoldCoin(context, w - 150, h - 150))
         }
 
         coinsInitialized = true
     }
 
     fun initializeEnemies(){
-        for (i in 0..0){
-            enemies.add(Enemy(context))
+        for (i in 0..numberOfEnemies){
+
+            var x: Int = 50
+            var y: Int = 200
+
+            when (i){
+                1 -> {x = w - 100; y = 200}
+                2 -> {x = 50; y = h  -250}
+                3 -> {x = w - 100; y = h - 250}
+            }
+            enemies.add(Enemy(context, x, y))
         }
         enemiesInitialized = true
     }
@@ -90,6 +102,7 @@ class Game(private var context: Context, view: TextView) {
         direction = Direction.none
         points = 0
         pointsView.text = "${context.resources.getString(R.string.points)} $points"
+        onGameRunning?.let { it(true) }
         gameView?.invalidate() //redraw screen
     }
 
@@ -143,11 +156,33 @@ class Game(private var context: Context, view: TextView) {
 
     }
 
-    //TODO check if the pacman touches a gold coin
-    //and if yes, then update the neccesseary data
-    //for the gold coins and the points
-    //so you need to go through the arraylist of goldcoins and
-    //check each of them for a collision with the pacman
+    fun moveEnemies(pixels: Int){
+        if (direction != Direction.none){
+            for (e in enemies){
+                //is enemy left or right of pacman
+                if (e.x > pacman.x){
+                    e.x = e.x - pixels
+                }
+                if (e.x < pacman.x){
+                    //move right
+                    e.x = e.x + pixels
+                }
+                //is enemy up or down of pacman
+                if (e.y > pacman.y){
+                    //move up
+                    e.y = e.y - pixels
+                }
+                if (e.y < pacman.y){
+                    //move down
+                    e.y = e.y + pixels
+                }
+
+            }
+        }
+
+        Log.d("Pacman", "X: ${pacman.x} Y: ${pacman.y}")
+    }
+
     fun doCollisionCheck() {
 
         val remainingCoins = coins.filter { !it.taken }
@@ -155,6 +190,8 @@ class Game(private var context: Context, view: TextView) {
         //check for collision on coins
         for (coin in remainingCoins){
             if (pacman.IsCollided(coin)){
+                val indexOf = coins.indexOf(coin)
+                Log.d("IndexOf", indexOf.toString())
                 coin.taken = true
                 points++
                 pointsView.text = "${context.resources.getString(R.string.points)} $points"
@@ -166,6 +203,7 @@ class Game(private var context: Context, view: TextView) {
             if (pacman.IsCollided(enemy)){
                 enemy.taken = true
                 direction = Direction.none
+                onGameRunning?.let { it(false) }
                 Toast.makeText(context, "Game Over. Player Lost", Toast.LENGTH_SHORT).show()
             }
         }
@@ -174,19 +212,8 @@ class Game(private var context: Context, view: TextView) {
         if (remainingCoins.count() == 0 && coinsInitialized)
         {
             direction = Direction.none
+            onGameRunning?.let { it(false) }
             Toast.makeText(context, "Game Over. Player Won", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-
-
-    @Deprecated("Use movePacman instead")
-    fun movePacmanRight(pixels: Int) {
-        //still within our boundaries?
-        if (pacman.x + pixels + pacman.width() < w) {
-            pacman.x = pacman.x + pixels
-            doCollisionCheck()
-            gameView!!.invalidate()
         }
     }
 }

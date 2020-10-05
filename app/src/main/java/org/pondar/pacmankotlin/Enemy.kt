@@ -6,16 +6,16 @@ import android.graphics.BitmapFactory
 import kotlin.properties.Delegates
 import kotlin.random.Random
 
-class Enemy(context: Context) : GameActor(context) {
+class Enemy(context: Context, x: Int, y: Int) : GameActor(context) {
 
     var taken: Boolean by Delegates.observable(false) { _, oldValue, newValue ->
         //Log.d("taken","New Value $newValue")
-        //playSound(R.raw.enemycollect)
+        enemycollectSound?.let { playSound(it) }
     }
 
     init {
-        x = 50
-        y = 200
+        this.x = x
+        this.y = y
         setBitmap()
     }
 

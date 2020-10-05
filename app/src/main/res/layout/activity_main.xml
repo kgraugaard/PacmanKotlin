@@ -9,12 +9,11 @@
         />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/buttons"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/holo_red_light"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/moveLeft"
@@ -23,31 +22,41 @@
             android:text="@string/move_left" />
 
         <Button
+            android:id="@+id/moveUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/move_up"
-            android:id="@+id/moveUp"/>
+            android:text="@string/move_up" />
 
         <Button
+            android:id="@+id/moveDown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/move_down"
-            android:id="@+id/moveDown"/>
+            android:text="@string/move_down" />
 
         <Button
+            android:id="@+id/moveRight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/move_right"
-            android:id="@+id/moveRight"/>
+            android:text="@string/move_right" />
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/pointsView"
-        android:textSize="24sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/points" />
+        android:text="@string/points"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/levelView"
+        android:layout_width="208dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="@string/level"
+        android:textSize="24sp"
+
+        />
 
 
     <!-- This will be your gameview - notice that it is BELOW

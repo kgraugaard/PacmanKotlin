@@ -5,13 +5,25 @@ import android.graphics.Bitmap
 import android.graphics.Rect
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.media.SoundPool
+
 
 open class GameActor(val context: Context) {
+
+    private val soundPool: SoundPool = SoundPool(4, AudioManager.STREAM_MUSIC, 100)
+
+    internal var coincollectSound: Int? = null
+    internal var enemycollectSound: Int? = null
 
     var x: Int = 0
     var y: Int = 0
 
     var bitmap: Bitmap? = null
+
+    init {
+        coincollectSound = soundPool.load(context, R.raw.coincollect, 1)
+        enemycollectSound = soundPool.load(context, R.raw.enemycollect, 2)
+    }
 
     fun getRect(): Rect
     {
@@ -28,15 +40,8 @@ open class GameActor(val context: Context) {
     }
 
     internal fun playSound(resourceId: Int){
-        Thread {
-            val mp: MediaPlayer = MediaPlayer.create(context,resourceId)
-            mp.setAudioStreamType(AudioManager.STREAM_MUSIC)
-            mp.isLooping = false
-            mp.start()
 
-            while (mp.isPlaying){
+        soundPool.play(resourceId, 1F,1F,10, 0,1F)
 
-            }
-        }.start()
     }
 }

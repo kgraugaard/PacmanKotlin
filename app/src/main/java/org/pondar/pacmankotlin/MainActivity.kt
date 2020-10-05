@@ -21,8 +21,6 @@ class MainActivity : AppCompatActivity() {
     private var counter : Int = 0
     private var running = false
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -33,6 +31,10 @@ class MainActivity : AppCompatActivity() {
         game?.setGameView(gameView)
         gameView.setGame(game)
         game?.newGame()
+
+        game?.onGameRunning = {value ->
+            running = value
+        }
 
 /*        game?.onGameOver = {value, msg ->
             Log.d("GAMEOVER", msg)
@@ -100,7 +102,8 @@ class MainActivity : AppCompatActivity() {
         if (running)
         {
             counter++
-            game?.movePacman(10)
+            game?.movePacman(8)
+            game?.moveEnemies(4)
         }
     }
 }
