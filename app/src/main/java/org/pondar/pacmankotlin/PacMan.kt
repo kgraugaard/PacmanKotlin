@@ -1,5 +1,6 @@
 package org.pondar.pacmankotlin
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -7,13 +8,13 @@ import android.graphics.Rect
 import android.util.Log
 import java.lang.Exception
 
-class PacMan(resources: Resources) : GameItem(resources) {
+class PacMan(context: Context) : GameActor(context) {
 
     init {
-        this.bitmap = BitmapFactory.decodeResource(resources, R.drawable.pacman)
+        this.bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman)
     }
 
-    fun IsCollided(foreignObject: GameItem) : Boolean {
+    fun IsCollided(foreignObject: GameActor) : Boolean {
 
         val foreignRect = foreignObject.getRect()
 
