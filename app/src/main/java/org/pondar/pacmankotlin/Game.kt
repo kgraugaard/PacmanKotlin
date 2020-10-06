@@ -16,10 +16,11 @@ import kotlin.properties.Delegates
  * This class should contain all your game logic
  */
 
-class Game(private var context: Context, view: TextView) {
+class Game(private var context: Context) {
 
-    private var pointsView: TextView = view
     private var points: Int = 0
+    private var level : Int = 1
+
 
     //a reference to the gameview
     private var gameView: GameView? = null
@@ -41,20 +42,14 @@ class Game(private var context: Context, view: TextView) {
     var numberOfCoins: Int = 3
     var numberOfEnemies: Int = 0
 
+    //is the gaming still runnin
     var onGameRunning: ((value: Boolean) -> Unit)? = null
 
-    //is the game on???
-    var GameWon: Boolean by Delegates.observable(false) {_, oldVal, newVal ->
-        if (newVal){
-            //onGameOver?.invoke(true, "Player won the game")
-        }
-    }
+    //point scored
+    var onPoint: ((value: Int) -> Unit)? = null
 
-    var GameOver: Boolean by Delegates.observable(false){_ , oldVal, newVal ->
-        if (newVal){
-            //onGameOver?.invoke(true, "Player Lost the game")
-        }
-    }
+    //set level change
+    var onChangeLevel: ((value: Int) -> Unit)? = null
 
     init {
         newGame()
@@ -90,20 +85,33 @@ class Game(private var context: Context, view: TextView) {
         enemiesInitialized = true
     }
 
-
-    fun newGame() {
+    private fun initNewGame(){
         pacman.x = (w - pacman.width()) / 2
         pacman.y = (h - pacman.height()) / 2 //just some starting coordinates - you can change this.
-        //reset the points
+
         coinsInitialized = false
         enemiesInitialized = false
+
         coins.clear()
         enemies.clear()
+
         direction = Direction.none
-        points = 0
-        pointsView.text = "${context.resources.getString(R.string.points)} $points"
         onGameRunning?.let { it(true) }
         gameView?.invalidate() //redraw screen
+    }
+
+    fun newGame() {
+        //reset the points and other stuff
+        level = 1
+        numberOfCoins =  3
+        numberOfEnemies = 0
+        points = 0
+        onPoint?.let { it(points) }
+        initNewGame()
+    }
+
+    fun nextLevel(){
+        initNewGame()
     }
 
     fun setSize(h: Int, w: Int) {
@@ -194,7 +202,7 @@ class Game(private var context: Context, view: TextView) {
                 Log.d("IndexOf", indexOf.toString())
                 coin.taken = true
                 points++
-                pointsView.text = "${context.resources.getString(R.string.points)} $points"
+                onPoint?.let { it(points) }
             }
         }
 
@@ -213,7 +221,20 @@ class Game(private var context: Context, view: TextView) {
         {
             direction = Direction.none
             onGameRunning?.let { it(false) }
+            //nexy Level please
+            onChangeLevel?.let { it(level++) }
             Toast.makeText(context, "Game Over. Player Won", Toast.LENGTH_SHORT).show()
         }
     }
 }
+
+/*    //is the game won???
+    var nextLevel: Boolean by Delegates.observable(false) {_, oldVal, newVal ->
+
+    }
+
+    var GameOver: Boolean by Delegates.observable(false){_ , oldVal, newVal ->
+        if (newVal){
+            //onGameOver?.invoke(true, "Player Lost the game")
+        }
+    }*/
