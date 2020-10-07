@@ -25,11 +25,6 @@ open class GameActor(val context: Context) {
         enemycollectSound = soundPool.load(context, R.raw.enemycollect, 2)
     }
 
-    fun getRect(): Rect
-    {
-        return Rect(x, y, y + bitmap!!.width, y + bitmap!!.height)
-    }
-
     fun height(): Int{
         return  this.bitmap!!.height
     }
@@ -40,8 +35,6 @@ open class GameActor(val context: Context) {
     }
 
     internal fun playSound(resourceId: Int){
-
         soundPool.play(resourceId, 1F,1F,10, 0,1F)
-
     }
 }

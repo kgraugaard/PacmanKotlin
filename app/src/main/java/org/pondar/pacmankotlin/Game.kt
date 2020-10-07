@@ -39,7 +39,7 @@ class Game(private var context: Context) {
     var coins = ArrayList<GoldCoin>()
     var enemies = ArrayList<Enemy>()
 
-    var numberOfCoins: Int = 3
+    var numberOfCoins: Int = 0
     var numberOfEnemies: Int = 0
 
     //is the gaming still runnin
@@ -103,7 +103,8 @@ class Game(private var context: Context) {
     fun newGame() {
         //reset the points and other stuff
         level = 1
-        numberOfCoins =  3
+        onChangeLevel?.let { it(level) }
+        numberOfCoins =  0
         numberOfEnemies = 0
         points = 0
         onPoint?.let { it(points) }
@@ -117,6 +118,10 @@ class Game(private var context: Context) {
     fun setSize(h: Int, w: Int) {
         this.h = h
         this.w = w
+    }
+
+    fun changeDirection(direction: Direction){
+        this.direction = direction
     }
 
     fun changeDirection(strDirection: String){
@@ -199,7 +204,7 @@ class Game(private var context: Context) {
         for (coin in remainingCoins){
             if (pacman.IsCollided(coin)){
                 val indexOf = coins.indexOf(coin)
-                Log.d("IndexOf", indexOf.toString())
+                Log.d("Collision CoinIndex", indexOf.toString())
                 coin.taken = true
                 points++
                 onPoint?.let { it(points) }
