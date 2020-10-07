@@ -12,7 +12,7 @@ import java.lang.Exception
 class PacMan(context: Context) : GameActor(context) {
 
     init {
-        this.bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman)
+        this.bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman_small)
     }
 
     fun IsCollided(foreignObject: GameActor): Boolean {

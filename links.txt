@@ -1,5 +1,0 @@
-https://stackoverflow.com/questions/18459122/play-sound-on-button-click-android
-
-https://www.kotlindevelopment.com/delegates-observable/
-
-https://stackoverflow.com/questions/5914911/pixel-perfect-collision-detection-android
