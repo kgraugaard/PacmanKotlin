@@ -2,21 +2,27 @@ package org.pondar.pacmankotlin
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import android.view.MotionEvent
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GestureDetectorCompat
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.Exception
 import java.util.*
 import kotlin.random.Random
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
+
+
+    //swipe references
+    private lateinit var mDetector: GestureDetectorCompat
 
     //reference to the game class.
     private var game: Game? = null
@@ -30,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_main)
+        mDetector = GestureDetectorCompat(this, this)
+
         game = Game(this)
 
         game?.setGameView(gameView)
@@ -37,17 +45,17 @@ class MainActivity : AppCompatActivity() {
         game?.newGame()
 
         //callback functions
-        game?.onGameRunning = {isRunning  ->
+        game?.onGameRunning = { isRunning  ->
             running = isRunning
         }
 
-        game?.onPoint = {points ->
+        game?.onPoint = { points ->
             this.pointsView.text = "${getString(R.string.points)} $points"
         }
 
-        game?.onChangeLevel = {level ->
+        game?.onChangeLevel = { level ->
             //add coins + enemies
-            game?.numberOfEnemies = Random.nextInt(0,3)
+            game?.numberOfEnemies = Random.nextInt(0, 3)
             game?.numberOfCoins = game?.numberOfCoins!! + 1
             game?.nextLevel()
             this.levelView.text = "${getString(R.string.level)} $level"
@@ -64,14 +72,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //running = true
         //set timer
-        timer.schedule(object: TimerTask(){
+        timer.schedule(object : TimerTask() {
             override fun run() {
                 timerMethod()
             }
-        }, 0 , 30)
+        }, 0, 30)
 
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return if (mDetector.onTouchEvent(event)){
+            true
+        } else{
+            super.onTouchEvent(event)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -126,4 +141,57 @@ class MainActivity : AppCompatActivity() {
         putExtra(Intent.EXTRA_TEXT, "I got this amazing number of ${point}. I'd bet You can't beat that.")
         type = "text/plain"
     }
+
+    override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+        val SWIPE_THRESHOLD = 100;
+        val SWIPE_VELOCITY_THRESHOLD = 100
+        var res: Boolean = false
+        try {
+            val difY: Float = e2.getY() - e1.getY()
+            val difX: Float = e2.getX() - e1.getX()
+
+            if (Math.abs(difX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                if (difX > 0) {
+                    Log.d("Gesture", "Right")
+                    game?.changeDirection(Direction.rigth)
+                } else {
+                    Log.d("Gesture", "Left")
+                    game?.changeDirection(Direction.left)
+                }
+                res = true;
+            } else if (Math.abs(difY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                if (difY > 0) {
+                    Log.d("Gesture", "Down")
+                    game?.changeDirection(Direction.down)
+                } else {
+                    Log.d("Gesture", "Up")
+                    game?.changeDirection(Direction.up)
+                }
+                res = true;
+            }
+        } catch (ex: Exception){
+
+        }
+        return res
+    }
+
+    override fun onDown(e: MotionEvent?): Boolean {
+        return true
+    }
+
+    override fun onShowPress(e: MotionEvent?) {
+
+    }
+
+    override fun onSingleTapUp(e: MotionEvent?): Boolean {
+        return true
+    }
+
+    override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+        return true
+    }
+
+    override fun onLongPress(e: MotionEvent?) {
+    }
+
 }
